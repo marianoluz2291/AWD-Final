@@ -1,0 +1,105 @@
+{% block content %}
+<div class="container">
+  <div class="header">
+    <a href="{% url 'full_people' %}" class="back-link">Back to People</a>
+    <h2 class="section-title">All Teachers</h2>
+  </div>
+
+  <!-- Search box -->
+  <form method="GET" id="search-form" class="search-form">
+    <input type="text" name="q" id="search-input" placeholder="Search teachers..." class="search-input">
+  </form>
+
+  <div id="teacher-list" class="teacher-list">
+    <ul>
+      {% for teacher in teachers %}
+        <li><a href="{% url 'teacher_records' teacher.id %}">{{ teacher.first_name }} {{ teacher.last_name }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#search-input').on('input', function() {
+      var query = $(this).val();
+      $.ajax({
+        url: "{% url 'teacher_records' %}",
+        data: {
+          'q': query
+        },
+        dataType: 'json',
+        success: function(data) {
+          $('#teacher-list').html(data.html);
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .container {
+    max-width: 800px;
+    margin: 2em auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    position: relative;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-size: 2em;
+    color: #34495e;
+    margin: 0;
+    text-align: center;
+    flex-grow: 1;
+  }
+
+  .search-form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+
+  .search-input {
+    width: 100%;
+    max-width: 500px;
+    padding: 12px 15px;
+    border: 1px solid #ced4da;
+    border-radius: 25px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) inset;
+    font-size: 16px;
+    transition: all 0.3s ease;
+  }
+
+  .search-input:focus {
+    border-color: #2980b9;
+    box-shadow: 0 0 8px rgba(41, 128, 185, 0.3);
+    outline: none;
+  }
+
+  .teacher-list {
+    margin-top: 20px;
+  }
+
+  .back-link {
+    font-size: 16px;
+    color: #2980b9;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .back-link:hover {
+    color: #1a5276;
+  }
+</style>
+{% endblock %}

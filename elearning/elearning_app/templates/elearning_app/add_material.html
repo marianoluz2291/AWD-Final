@@ -1,0 +1,98 @@
+{% block content %}
+<div class="form-container">
+  <h2 class="form-title">Add Material to {{ course.title }}</h2>
+  <form method="post" enctype="multipart/form-data" class="upload-form">
+    {% csrf_token %}
+    <div class="form-fields">
+      {{ form.as_p }}
+    </div>
+    <button type="submit" class="upload-button">Upload Material</button>
+  </form>
+</div>
+{% endblock %}
+
+<style>
+  .form-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #efe2e2;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-title {
+    font-size: 2em;
+    color: #34495e;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .upload-form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form-fields p {
+    margin-bottom: 20px;
+  }
+
+  .form-fields label {
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .form-fields input[type="text"],
+  .form-fields input[type="file"],
+  .form-fields textarea,
+  .form-fields select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-top: 5px;
+    font-size: 16px;
+    color: #495057;
+  }
+
+  .form-fields input:focus,
+  .form-fields textarea:focus,
+  .form-fields select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  }
+
+  .upload-button {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: #285789;
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .upload-button:hover {
+    background-color: #0e68c9;
+    border-color: #031a31;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+  }
+
+  .upload-button:active {
+    background-color: #004085;
+    border-color: #003060;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transform: translateY(1px);
+  }
+</style>

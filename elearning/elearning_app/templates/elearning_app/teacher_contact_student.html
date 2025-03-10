@@ -1,0 +1,136 @@
+{% block content %}
+<div class="container">
+  <a href="{% url 'teacher_homepage' %}" class="back-link">Back to Dashboard</a>
+
+  <h2 class="section-title">Students Enrolled in Your Courses</h2>
+
+  <table class="students-table">
+    <thead>
+      <tr>
+        <th>Student</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Chat</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for student in students %}
+        <tr>
+          <td>{{ student.username }}</td>
+          <td>{{ student.email }}</td>
+          <td>
+            {% if student.profile.status == 'available' %}
+              <span class="status available">● Available</span>
+            {% elif student.profile.status == 'busy' %}
+              <span class="status busy">● Busy</span>
+            {% else %}
+              <span class="status unavailable">● Unavailable</span>
+            {% endif %}
+          </td>
+          <td>
+            <a href="{% url 'chat_messages' room_chat=student.username %}" class="chat-button">Chat</a>
+            {% if student.has_unread_messages %}
+              <span class="unread-badge">New</span>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .container {
+    max-width: 900px;
+    margin: 2em auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    position: relative;
+  }
+
+  .back-link {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 16px;
+    color: #2980b9;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .back-link:hover {
+    color: #1a5276;
+  }
+
+  .section-title {
+    font-size: 2em;
+    color: #34495e;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .students-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+
+  .students-table th, .students-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .students-table th {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    text-transform: uppercase;
+    font-size: 14px;
+  }
+
+  .students-table td {
+    font-size: 16px;
+    color: #34495e;
+  }
+
+  .status {
+    font-weight: bold;
+  }
+
+  .available {
+    color: #2ecc71;
+  }
+
+  .busy {
+    color: #e74c3c;
+  }
+
+  .unavailable {
+    color: #95a5a6;
+  }
+
+  .chat-button {
+    padding: 8px 15px;
+    background-color: #2980b9;
+    color: #ffffff;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+
+  .chat-button:hover {
+    background-color: #1a5276;
+  }
+
+  .unread-badge {
+    margin-left: 10px;
+    color: #e74c3c;
+    font-weight: bold;
+  }
+</style>
+{% endblock %}

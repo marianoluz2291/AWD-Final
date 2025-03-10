@@ -1,0 +1,131 @@
+{% block content %}
+<div class="container">
+  <div class="header">
+    <a href="{% url 'student_homepage' %}" class="back-link">Back to Dashboard</a>
+    <h2 class="section-title">Teachers You're Enrolled With</h2>
+  </div>
+
+  <table class="teacher-table">
+    <thead>
+      <tr>
+        <th>Teacher</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for teacher in teachers %}
+        <tr>
+          <td>{{ teacher.username }}</td>
+          <td>{{ teacher.email }}</td>
+          <td>
+            {% if teacher.profile.status == 'available' %}
+              <span class="status-dot available">●</span> Available
+            {% elif teacher.profile.status == 'busy' %}
+              <span class="status-dot busy">●</span> Busy
+            {% else %}
+              <span class="status-dot unavailable">●</span> Unavailable
+            {% endif %}
+          </td>
+          <td>
+            <a href="{% url 'chat_messages' room_chat=teacher.username %}" class="chat-button">Chat</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .container {
+    max-width: 800px;
+    margin: 2em auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    position: relative;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-size: 2em;
+    color: #34495e;
+    margin: 0;
+    text-align: center;
+    flex-grow: 1;
+  }
+
+  .teacher-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+  }
+
+  .teacher-table th, .teacher-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    font-size: 16px;
+    color: #34495e;
+  }
+
+  .teacher-table th {
+    background-color: #ecf0f1;
+    font-size: 14px;
+    color: #2c3e50;
+    text-transform: uppercase;
+  }
+
+  .status-dot {
+    font-size: 1.2em;
+    vertical-align: middle;
+  }
+
+  .available {
+    color: #2ecc71;
+  }
+
+  .busy {
+    color: #e74c3c;
+  }
+
+  .unavailable {
+    color: #95a5a6;
+  }
+
+  .chat-button {
+    padding: 8px 15px;
+    background-color: #2980b9;
+    color: #ffffff;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+
+  .chat-button:hover {
+    background-color: #1a5276;
+  }
+
+  .back-link {
+    font-size: 16px;
+    color: #2980b9;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .back-link:hover {
+    color: #1a5276;
+  }
+</style>
+{% endblock %}

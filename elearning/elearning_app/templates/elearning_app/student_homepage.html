@@ -1,0 +1,296 @@
+{% block content %}
+<nav class="navigation">
+  <ul class="navigation-list">
+    <li><a href="{% url 'student_homepage' %}">Home</a></li>
+    <li><a href="{% url 'current_status' %}">Update Status</a></li>
+    <li><a href="{% url 'student_teacher_list' %}">Contact Teachers</a></li>
+    <li>
+      <form method="post" action="{% url 'logout' %}" class="logout-form">
+        {% csrf_token %}
+        <button type="submit" class="logout-button">Logout</button>
+      </form>
+    </li>
+  </ul>
+</nav>
+
+<div class="container">
+  <div class="header">
+    <h1>Welcome, <span class="highlight">{{ full_name }}</span>!</h1>
+  </div>
+
+  <div class="status-availability">
+    <p>Status: 
+      {% if user.profile.status == 'available' %}
+        <span class="status available">● Available</span>
+      {% elif user.profile.status == 'busy' %}
+        <span class="status busy">● Busy</span>
+      {% else %}
+        <span class="status unavailable">● Unavailable</span>
+      {% endif %}
+    </p>
+  </div>
+
+  <div class="notifications">
+    <button onclick="toggleDropdown()" class="notification-bell">
+      Notifications ({{ notifications.count }})
+    </button>
+    <div id="notificationDropdown" class="dropdown-content">
+      {% if notifications %}
+        <ul>
+          {% for notification in notifications %}
+            <li>
+              <a href="{% url 'notification_read' notification.id %}">
+                {{ notification.message }}
+              </a>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No new notifications</p>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="courses-section">
+    <h2>Available Courses</h2>
+    <ul class="courses-list">
+      {% for course in courses %}
+        <li>
+          <h3>{{ course.course_name }}</h3>
+          <p>{{ course.course_description }}</p>
+          {% if course.id in enroll_course %}
+            <a href="{% url 'course_information' course.id %}">
+              <button type="button" class="course-button">View Lessons</button>
+            </a>
+          {% else %}
+            <form method="post" action="{% url 'enroll_in_course' course.id %}">
+              {% csrf_token %}
+              <button type="submit" class="course-button">Enroll</button>
+            </form>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<script>
+  function toggleDropdown() {
+    document.getElementById("notificationDropdown").classList.toggle("show");
+  }
+
+  window.onclick = function(event) {
+    if (!event.target.matches('.notification-bell')) {
+      var dropdowns = document.getElementsByClassName("dropdown-content");
+      for (var i = 0; i < dropdowns.length; i++) {
+        var openDropdown = dropdowns[i];
+        if (openDropdown.classList.contains('show')) {
+          openDropdown.classList.remove('show');
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    min-height: 200%;
+  }
+
+  .navigation {
+    background-color: #2c3e50;
+    padding: 1em;
+  }
+
+  .navigation-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .navigation-list li {
+    margin-right: 20px;
+  }
+
+  .navigation-list li a {
+    color: #ecf0f1;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s ease;
+  }
+
+  .navigation-list li a:hover {
+    color: #f39c12;
+  }
+
+  .logout-form {
+    margin: 0;
+  }
+
+  .logout-button {
+    background-color: transparent;
+    color: #ecf0f1;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+
+  .logout-button:hover {
+    color: #e74c3c;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 2em auto;
+    padding: 2em;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    position: relative;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 1.5em;
+  }
+
+  .header h1 {
+    margin: 0;
+    font-size: 2.5em;
+    color: #34495e;
+  }
+
+  .highlight {
+    color: #e67e22;
+    font-weight: bold;
+  }
+
+  .status-availability {
+    text-align: center;
+    margin-bottom: 1.5em;
+  }
+
+  .status {
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+
+  .available {
+    background-color: #2ecc71;
+    color: #ffffff;
+  }
+
+  .busy {
+    background-color: #e74c3c;
+    color: #ffffff;
+  }
+
+  .unavailable {
+    background-color: #95a5a6;
+    color: #ffffff;
+  }
+
+  .notifications {
+    text-align: center;
+    margin-bottom: 1.5em;
+    position: relative;
+  }
+
+  .notification-bell {
+    background-color: #2980b9;
+    color: #ffffff;
+    padding: 10px;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #ecf0f1;
+    min-width: 200px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+    border-radius: 5px;
+    margin-top: 5px;
+    right: 0;
+  }
+
+  .dropdown-content ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .dropdown-content li {
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    color: #34495e;
+    cursor: pointer;
+  }
+
+  .dropdown-content li:hover {
+    background-color: #bdc3c7;
+  }
+
+  .show {
+    display: block;
+  }
+
+  .courses-section {
+    margin-bottom: 1.5em;
+  }
+
+  .courses-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .courses-list li {
+    padding: 10px;
+    background-color: #ecf0f1;
+    margin-bottom: 10px;
+    border-radius: 5px;
+  }
+
+  .courses-list li h3 {
+    margin: 0 0 5px 0;
+  }
+
+  .courses-list li p {
+    margin: 0 0 10px 0;
+  }
+
+  .course-button {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    background-color: #e67e22;
+    color: #ffffff;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+    border: none;
+  }
+
+  .course-button:hover {
+    background-color: #d35400;
+  }
+</style>
+{% endblock %}

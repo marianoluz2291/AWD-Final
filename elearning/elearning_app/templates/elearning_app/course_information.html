@@ -1,0 +1,331 @@
+
+<nav class="navigation">
+  <ul class="navigation-list">
+    {% if a_teacher %}
+    <li><a href="{% url 'teacher_homepage' %}">Home</a></li>
+    <li><a href="{% url 'full_people' %}">People</a></li>
+    <li><a href="{% url 'current_status' %}">Status</a></li>
+    <li><a href="{% url 'teacher_contact_student' %}">Contact</a></li>
+    {% else %}
+    <li><a href="{% url 'student_homepage' %}">Home</a></li>
+    <li><a href="{% url 'current_status' %}">Update Status</a></li>
+    <li><a href="{% url 'student_teacher_list' %}">Contact Teachers</a></li>
+    {% endif %}
+  </ul>
+</nav>
+
+<div class="course-name">
+  <h2>{{ course.course_name }}</h2>
+  <p>{{ course.course_description }}</p>
+
+  {% if a_teacher %}
+  <div class="add-materials">
+    <a href="{% url 'add_material' course.id %}" class="add-lesson-button">Add Lesson</a>
+  </div>
+  {% endif %}
+
+  <h3>Lessons</h3>
+  <ul class="lessons-materials">
+    {% for material in materials %}
+    <li>
+      <p>{{ material.subject_title }}</p>
+      <a href="{{ material.file.url }}" class="view-material">View Material</a>
+      {% if a_teacher %}
+      <form method="post" action="{% url 'delete_material' material.id %}" class="delete-lesson">
+        {% csrf_token %}
+        <button type="submit" class="delete-button" onclick="return confirm('Confirm Delete Lesson?');">Delete</button>
+      </form>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+
+  <!-- Feedback section for students -->
+  {% if not a_teacher %}
+  <div class="submit-feedback">
+    <h3>Submit Feedback</h3>
+    <a href="{% url 'send_feedback' course.id %}" class="feedback-button">Submit Feedback</a>
+  </div>
+  {% endif %}
+
+  <div class="feedback-and-students">
+    {% if a_teacher %}
+    <!-- Feedback Section -->
+    <div class="feedback">
+      <h3>Feedback</h3>
+      {% if unread_feedback_no > 0 %}
+      <p class="feedback-notread">You have {{ unread_feedback_no }} unread feedback(s)</p>
+      {% else %}
+      <p>No unread feedback</p>
+      {% endif %}
+  
+      <ul class="feedback-received">
+        {% for feedback in feedbacks_from_student %}
+        <li class="{% if not feedback.is_read %}unread{% endif %}">
+          <a href="{% url 'view_feedback' feedback.id %}">
+            <strong>{{ feedback.feedback_title }}</strong> - {{ feedback.description }}
+            <span class="timestamp">{{ feedback.date_submitted }}</span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <!-- Enrolled Students Section -->
+    <div class="student-enrolled-box">
+      <h3>Enrolled Students</h3>
+      <ul class="student-enrolled">
+        {% for enrollment in no_students_enrolled %}
+        <li>{{ enrollment.student.username }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+  html,
+  body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    /* Set background color here */
+    color: #333;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 170vh;
+    /* Ensure body takes full height */
+  }
+
+  .container {
+    flex-grow: 1;
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+  }
+
+  .course-name {
+    padding-left: 20px;
+    /* Adds space between the content and the left edge */
+    padding-right: 20px;
+    /* Optional: Adds space between the content and the right edge */
+  }
+
+  h2 {
+    font-size: 2em;
+    color: #34495e;
+    margin-bottom: 20px;
+  }
+
+  p {
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  /* Navigation Bar Styling */
+  .navigation {
+    background-color: #2c3e50;
+    padding: 10px 20px;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .navigation-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .navigation-list li {
+    margin-right: 15px;
+  }
+
+  .navigation-list li a {
+    color: #ecf0f1;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s ease;
+  }
+
+  .navigation-list li a:hover {
+    color: #f39c12;
+  }
+
+  /* Lessons Section */
+  .lessons-materials {
+    margin-top: 20px;
+    list-style: none;
+    padding: 0;
+  }
+
+  .lessons-materials li {
+    padding: 10px;
+    background-color: #f9f9f9;
+    margin-bottom: 10px;
+    border-radius: 5px;
+  }
+
+  .view-material {
+    color: #27ae60;
+    font-weight: bold;
+  }
+
+  .add-lesson-button {
+    display: inline-block;
+    padding: 12px 25px;
+    background: linear-gradient(135deg, #1abc9c, #16a085);
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .add-lesson-button:hover {
+    background: linear-gradient(135deg, #16a085, #1abc9c);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .add-lesson-button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .delete-lesson {
+    display: inline-block;
+    margin-left: 10px;
+  }
+
+  .delete-button {
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .delete-button:hover {
+    background-color: #c0392b;
+  }
+
+  /* Feedback and Enrolled Students Section */
+  .feedback-and-students {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+  }
+
+  .feedback,
+  .student-enrolled-box {
+    flex: 1;
+    padding: 20px;
+    background-color: #f9f9f9;
+    margin: 10px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .feedback h3,
+  .student-enrolled-box h3 {
+    font-size: 1.5em;
+    color: #34495e;
+    margin-bottom: 15px;
+  }
+
+  .feedback-notread {
+    font-weight: bold;
+    color: #e74c3c;
+    margin-bottom: 10px;
+  }
+
+  .feedback-received {
+    list-style: none;
+    padding: 0;
+  }
+
+  .feedback-received li {
+    padding: 10px;
+    background-color: #fff;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .feedback-received li.unread {
+    font-weight: bold;
+  }
+
+  .feedback-received li a {
+    text-decoration: none;
+    color: #2980b9;
+    display: block;
+  }
+
+  .feedback-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #e67e22;
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .feedback-button:hover {
+    background-color: #d35400;
+  }
+
+  .add-lesson-button {
+    display: inline-block;
+    padding: 12px 25px;
+    background: linear-gradient(135deg, #1abc9c, #16a085);
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+
+  .add-lesson-button:hover {
+    background: linear-gradient(135deg, #16a085, #1abc9c);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+
+  .add-lesson-button:active {
+    transform: translateY(0);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .student-enrolled {
+    list-style: none;
+    padding: 0;
+  }
+
+  .student-enrolled li {
+    padding: 10px;
+    background-color: #fff;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  }
+</style>

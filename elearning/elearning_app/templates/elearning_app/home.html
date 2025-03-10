@@ -1,0 +1,138 @@
+{% block content %}
+<div class="container">
+  <div class="elearning-text">
+    <h2>eLearning Application</h2>
+  </div>
+  <div class="welcome-content">
+    {% if user.is_authenticated %}
+      <p>Hello, <span class="highlight">{{ user.username }}</span>!</p>
+      <form method="post" action="{% url 'logout' %}" class="logout-form">
+        {% csrf_token %}
+        <button type="submit" class="logout-button">Logout</button>
+      </form>
+    {% endif %}
+    <div class="auth-buttons">
+      <a href="{% url 'login' %}" class="auth-button">Login</a>
+      <a href="{% url 'register' %}" class="auth-button">Register</a>
+      <a href="{% url 'admin:index' %}" class="auth-button admin-button">Admin Panel</a>
+    </div>
+
+    <div class="api-section"></div>
+      <a href="/api/" class="auth-button api-button">View API</a>
+      <a href="/swagger/" class="auth-button swagger-button">View Swagger Docs</a>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .container {
+    max-width: 600px;
+    width: 100%;
+    padding: 40px;
+    background-color: rgba(172, 222, 198, 0.4);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    text-align: center;
+
+  }
+
+  .elearning-text h2 {
+    margin-bottom: 30px;
+    color: #173451;
+    font-size: 2em;
+    font-weight: bold;
+  }
+
+  .welcome-content p {
+    font-size: 1.2em;
+    color: #2c3e50;
+    margin-bottom: 30px;
+  }
+
+  .highlight {
+    color: #e67e22;
+    font-weight: bold;
+  }
+
+  .auth-buttons {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .auth-button, .logout-button {
+    flex: 1;
+    margin: 5px;
+    padding: 15px;
+    font-size: 1em;
+    border: none;
+    border-radius: 10px;
+    background-color: #106948;
+    color: #ffffff;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+
+  .auth-button:hover, .logout-button:hover {
+    background-color: #50c6b3;
+    transform: translateY(-3px);
+  }
+
+  .admin-button {
+    background-color: #e3262f;
+  }
+
+  .admin-button:hover {
+    background-color: #d35400;
+  }
+
+  .logout-form {
+    margin: 0;
+  }
+
+  .api-section {
+    margin-top: 15px;
+  }
+
+  .api-button {
+    background-color: #333;
+  }
+
+  .api-button:hover {
+    background-color: #555;
+  }
+
+  .swagger-button {
+    background-color:rgb(240, 6, 229);
+  }
+
+  .swagger-button:hover {
+    background-color:rgb(144, 9, 240);
+  }
+
+  @media (max-width: 400px) {
+    .auth-buttons {
+      flex-direction: column;
+    }
+
+    .auth-button, .logout-button {
+      margin: 10px 0;
+    }
+  }
+</style>
+{% endblock %}

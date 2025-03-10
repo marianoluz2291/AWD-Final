@@ -1,0 +1,94 @@
+{% block content %}
+<div class="container">
+  <h2 class="section-title">Update Status</h2>
+
+  <form method="post" class="status-form">
+    {% csrf_token %}
+    <label for="status" class="status-label">Select your status:</label>
+    <select name="status" id="status" class="status-select">
+      <option value="available" {% if user.profile.status == 'available' %}selected{% endif %}>Available</option>
+      <option value="busy" {% if user.profile.status == 'busy' %}selected{% endif %}>Busy</option>
+      <option value="unavailable" {% if user.profile.status == 'unavailable' %}selected{% endif %}>Unavailable</option>
+    </select>
+    <button type="submit" class="status-button">Update Status</button>
+  </form>
+
+  <a href="{% url 'student_homepage' %}" class="back-link">Back to Dashboard</a>
+</div>
+
+<style>
+  .container {
+    max-width: 600px;
+    margin: 2em auto;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  .section-title {
+    font-size: 2em;
+    color: #34495e;
+    margin-bottom: 20px;
+  }
+
+  .status-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .status-label {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: #2c3e50;
+  }
+
+  .status-select {
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 1em;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 300px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) inset;
+    transition: all 0.3s ease;
+  }
+
+  .status-select:focus {
+    border-color: #2980b9;
+    box-shadow: 0 0 8px rgba(41, 128, 185, 0.3);
+    outline: none;
+  }
+
+  .status-button {
+    padding: 12px 25px;
+    background-color: #2980b9;
+    color: #ffffff;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .status-button:hover {
+    background-color: #1a5276;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-top: 20px;
+    font-size: 16px;
+    color: #2980b9;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .back-link:hover {
+    color: #1a5276;
+  }
+</style>
+{% endblock %}
